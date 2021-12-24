@@ -13,17 +13,20 @@ namespace ProductsSelection.Controllers
         static ApplicationDbContext _dbContext;
         static List<Product> SelectedProducts;
 
+        //initialize static data members 
         static ProductsController()
         {
             _dbContext = new ApplicationDbContext();
             SelectedProducts = new List<Product>();
         }
+        //show all products
         public ActionResult Products()
         {
             return View(_dbContext.Products.ToList());
         }
 
         [HttpPost]
+        //adding item to cart and return updated cart
         public ActionResult AddToCart(int? productId)
         {
             var selectedProduct = _dbContext.Products.Find(productId);
@@ -34,6 +37,7 @@ namespace ProductsSelection.Controllers
         }
 
         [HttpPost]
+        //delete item from cart and return updated cart
         public ActionResult DeleteFromCart(int productId,string partialName)
         {
             if (SelectedProducts.Exists(p => p.Id == productId))
@@ -44,6 +48,7 @@ namespace ProductsSelection.Controllers
 
         public void SaveSelectedProducts()
         {
+            //remove old saved items and save new selected items
             foreach (var selectedProduct in _dbContext.SelectedProducts.ToList())
                 _dbContext.SelectedProducts.Remove(selectedProduct);
 
@@ -59,6 +64,8 @@ namespace ProductsSelection.Controllers
             }
             _dbContext.SaveChanges();
         }
+
+        //popup partial view
         public ActionResult CartDetails()
         {
             return PartialView(SelectedProducts);
