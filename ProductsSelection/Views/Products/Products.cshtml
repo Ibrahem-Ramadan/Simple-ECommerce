@@ -1,0 +1,119 @@
+﻿@model List<Product>
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var product in Model)
+        {
+
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4  py-2">
+                <div class="card  shadow p-3 mb-5 bg-body rounded h-100  ">
+                    <img class="card-img img-responsive" src="~/assets/@product.ProductImg">
+
+                    <div class="card-body  d-flex flex-column justify-content-end">
+                        <h4 class="card-title">@product.ProductName</h4>
+                        <h6 class="card-subtitle mb-2 text-muted">@product.ProductCategory</h6>
+                        <p class="card-text">
+                            @product.ProductDiscription
+                        </p>
+
+                        <div class=" d-flex justify-content-between align-items-center">
+                            <div class="price text-primary"><h5 class="mt-4">@product.ProductPrice EGP</h5></div>
+                            @Ajax.ActionLink("Add To Cart", "AddToCart", new { productId = product.Id },
+                                            new AjaxOptions
+                                            {
+                                                HttpMethod = "POST",
+                                                UpdateTargetId = "Cart", // <-- DOM element ID to update
+                                                InsertionMode = InsertionMode.Replace,
+                                                OnComplete = "showSnakebar"
+                                            }, new { @class = "btn btn-info" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+
+</div>
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header   mb-0">
+                <h5 class="modal-title">Cart Items</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body " id="CartDetails">
+                @* Partial View Cart Detailes Loaded Here *@
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div class="container" id="Cart">
+    @*Partial View For Cart *@
+</div>
+
+<!-- The actual snackbar -->
+<div id="snackbar">Item Added Successfully</div>
+
+@section scripts{
+
+    <script>
+
+        function showSnakebar() {
+            $("#snackbar").addClass("show")
+            setTimeout(function () {
+                $("#snackbar").removeClass("show")
+            }, 2000);
+        }
+
+        function show() {
+            $("#myModal").modal('show')
+        }
+
+        $("button[data-dismiss=modal]").click(function () {
+            $("#myModal").modal('hide');
+
+        });
+
+        function updateCart() {
+            $.ajax({
+                url: "/Products/AddToCart",
+                method: "POST",
+                dataType: "html",
+                cache: false,
+                success: function (data) {
+                    document.getElementById('Cart').innerHTML = '';
+                    $("#Cart").append(data);
+                }
+            })
+        }
+
+        $(function () {
+            $.ajax({
+                url: "/Products/AddToCart",
+                method: "POST",
+                dataType: "html",
+                cache: false,
+                success: function (data) {
+                    $("#Cart").append(data);
+                }
+            })
+        });
+
+    </script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+}
