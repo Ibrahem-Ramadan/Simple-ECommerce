@@ -67,6 +67,8 @@
 
 <!-- The actual snackbar -->
 <div id="snackbar">Item Added Successfully</div>
+<div id="savesnackbar">Items Saved Successfully</div>
+
 
 @section scripts{
 
@@ -76,6 +78,12 @@
             $("#snackbar").addClass("show")
             setTimeout(function () {
                 $("#snackbar").removeClass("show")
+            }, 2000);
+        }
+        function saveSnakebar() {
+            $("#savesnackbar").addClass("show")
+            setTimeout(function () {
+                $("#savesnackbar").removeClass("show")
             }, 2000);
         }
 
