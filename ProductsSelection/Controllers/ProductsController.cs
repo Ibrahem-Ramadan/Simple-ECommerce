@@ -10,8 +10,14 @@ namespace ProductsSelection.Controllers
     public class ProductsController : Controller
     {
         // GET: Products
-        static ApplicationDbContext _dbContext = new ApplicationDbContext();
-        static List<Product> SelectedProducts= new List<Product>(); 
+        static ApplicationDbContext _dbContext;
+        static List<Product> SelectedProducts;
+
+        static ProductsController()
+        {
+            _dbContext = new ApplicationDbContext();
+            SelectedProducts = new List<Product>();
+        }
         public ActionResult Products()
         {
             return View(_dbContext.Products.ToList());
